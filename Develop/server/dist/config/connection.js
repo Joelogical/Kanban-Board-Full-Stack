@@ -8,10 +8,17 @@ console.log("Environment variables:", {
     DB_USER: process.env.DB_USER,
     DB_PASSWORD: process.env.DB_PASSWORD ? "[HIDDEN]" : "not set",
 });
-const sequelize = new Sequelize(process.env.DB_NAME || "kanban_db", process.env.DB_USER || "postgres", process.env.DB_PASSWORD || "Thinkofanew1!", {
+const sequelize = new Sequelize("kanban_db", "postgres", "Thinkofanew1!", {
     host: "localhost",
     dialect: "postgres",
-    logging: console.log,
+    port: 5432,
+    logging: false,
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+    },
 });
 // Test the connection
 console.log("Testing database connection...");
@@ -20,12 +27,6 @@ sequelize
     .then(() => console.log("✅ Database connection successful"))
     .catch((err) => {
     console.error("❌ Database connection error:", err);
-    console.error("Connection details:", {
-        database: process.env.DB_NAME || "kanban_db",
-        user: process.env.DB_USER || "postgres",
-        host: "localhost",
-        error_code: err.code,
-        error_message: err.message,
-    });
+    console.error("Connection details:", err.original || err);
 });
 export default sequelize;
