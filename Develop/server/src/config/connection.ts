@@ -20,20 +20,23 @@ const sequelize = new Sequelize("kanban_db", "postgres", "Thinkofanew1!", {
 });
 
 // Test the connection
-console.log("Testing database connection...");
+console.log("Attempting to connect to PostgreSQL...");
+console.log("Connection config:", {
+  database: "kanban_db",
+  host: "localhost",
+  port: 5432,
+  user: "postgres",
+});
+
 sequelize
   .authenticate()
   .then(() => console.log("✅ Database connection successful"))
   .catch((err) => {
-    console.error("❌ Database connection error:", err);
-    // Check if PostgreSQL service is running
-    const { exec } = require("child_process");
-    exec("sc query postgresql", (error, stdout, stderr) => {
-      if (error) {
-        console.error("Could not check PostgreSQL service status");
-        return;
-      }
-      console.log("PostgreSQL Service Status:", stdout);
+    console.error("❌ Database connection error");
+    console.error("Error details:", {
+      message: err.message,
+      code: err.original?.code,
+      errno: err.original?.errno,
     });
   });
 
