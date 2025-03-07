@@ -12,18 +12,9 @@ console.log("Environment variables:", {
     : "not set",
 });
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is required");
-}
-
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize("kanban_db", "postgres", "postgres", {
+  host: "localhost",
   dialect: "postgres",
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
   logging: console.log,
 });
 
@@ -35,10 +26,12 @@ sequelize
   .catch((err) => {
     console.error("❌ Database connection error:", err);
     console.error("Connection details:", {
+      database: "kanban_db",
+      user: "postgres",
+      host: "localhost",
       error_code: err.code,
       error_message: err.message,
     });
-    process.exit(1); // Exit if we can't connect to the database
   });
 
 export default sequelize;

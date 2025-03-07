@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import bcrypt from 'bcrypt';
+import { DataTypes, Model } from "sequelize";
+import bcrypt from "bcryptjs";
 export class User extends Model {
     // Hash the password before saving the user
     async setPassword(password) {
@@ -23,7 +23,7 @@ export function UserFactory(sequelize) {
             allowNull: false,
         },
     }, {
-        tableName: 'users',
+        tableName: "users",
         sequelize,
         hooks: {
             beforeCreate: async (user) => {
@@ -32,7 +32,7 @@ export function UserFactory(sequelize) {
             beforeUpdate: async (user) => {
                 await user.setPassword(user.password);
             },
-        }
+        },
     });
     return User;
 }
