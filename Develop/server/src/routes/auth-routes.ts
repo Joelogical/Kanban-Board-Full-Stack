@@ -7,7 +7,7 @@ export const login = async (req: Request, res: Response) => {
   // Looks up user by username
   const { username, password } = req.body;
   const user = await User.findOne({ where: { username } });
-  if (!user) {
+  if (!user || !user.password) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
   // Compares the password with the hashed password
@@ -16,8 +16,23 @@ export const login = async (req: Request, res: Response) => {
   if (!isPasswordValid) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
-  
-  const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET!);
+
+  console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
+
+  if (!process.env.JWT_SECRET_KEY) {
+    return res.status(500).json({ message: "Server configuration error" });
+  }
+
+  // Gets JWT token
+  const token = jwt.sign(
+    {
+      username: user.username,
+      id: user.id,
+    },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "24h" }
+  );
+
   return res.json({ token });
 };
 
