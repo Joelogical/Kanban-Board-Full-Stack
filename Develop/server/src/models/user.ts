@@ -1,5 +1,5 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
-import bcrypt from 'bcrypt';
+import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import bcrypt from "bcryptjs";
 
 interface UserAttributes {
   id: number;
@@ -7,9 +7,12 @@ interface UserAttributes {
   password: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+export class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
   public id!: number;
   public username!: string;
   public password!: string;
@@ -42,7 +45,7 @@ export function UserFactory(sequelize: Sequelize): typeof User {
       },
     },
     {
-      tableName: 'users',
+      tableName: "users",
       sequelize,
       hooks: {
         beforeCreate: async (user: User) => {
@@ -51,7 +54,7 @@ export function UserFactory(sequelize: Sequelize): typeof User {
         beforeUpdate: async (user: User) => {
           await user.setPassword(user.password);
         },
-      }
+      },
     }
   );
 
