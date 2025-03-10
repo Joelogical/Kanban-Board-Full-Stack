@@ -15,15 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api", apiRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../../client/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
-  });
-}
-
 // Debug environment variables
 console.log("Environment check from server.js:");
 console.log("Current directory:", process.cwd());
