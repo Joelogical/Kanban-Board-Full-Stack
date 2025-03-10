@@ -1,4 +1,7 @@
-const Sequelize = require("sequelize");
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 console.log("=== Environment Variables Debug ===");
 console.log("1. Checking all environment variables...");
@@ -40,4 +43,4 @@ sequelize
     console.error("✗ Database connection failed:", err.message);
   });
 
-module.exports = sequelize; 
+export default sequelize; 
