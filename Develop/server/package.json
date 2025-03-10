@@ -15,7 +15,7 @@
       "src"
     ],
     "ext": "ts,json,js",
-    "exec": "npx tsc && node dist/src/server.js"
+    "exec": "npx tsc && node dist/server.js"
   },
   "keywords": [],
   "author": "",
