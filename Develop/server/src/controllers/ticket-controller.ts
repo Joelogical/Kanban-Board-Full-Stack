@@ -1,6 +1,5 @@
-import { Request, Response } from 'express';
-import { Ticket } from '../models/ticket.js';
-import { User } from '../models/user.js';
+import { Request, Response } from "express";
+import { Ticket, User } from "../models/index.js";
 
 // GET /tickets
 export const getAllTickets = async (_req: Request, res: Response) => {
@@ -9,8 +8,8 @@ export const getAllTickets = async (_req: Request, res: Response) => {
       include: [
         {
           model: User,
-          as: 'assignedUser', // This should match the alias defined in the association
-          attributes: ['username'], // Include only the username attribute
+          as: "assignedUser", // This should match the alias defined in the association
+          attributes: ["username"], // Include only the username attribute
         },
       ],
     });
@@ -28,15 +27,15 @@ export const getTicketById = async (req: Request, res: Response) => {
       include: [
         {
           model: User,
-          as: 'assignedUser', // This should match the alias defined in the association
-          attributes: ['username'], // Include only the username attribute
+          as: "assignedUser", // This should match the alias defined in the association
+          attributes: ["username"], // Include only the username attribute
         },
       ],
     });
     if (ticket) {
       res.json(ticket);
     } else {
-      res.status(404).json({ message: 'Ticket not found' });
+      res.status(404).json({ message: "Ticket not found" });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -47,7 +46,12 @@ export const getTicketById = async (req: Request, res: Response) => {
 export const createTicket = async (req: Request, res: Response) => {
   const { name, status, description, assignedUserId } = req.body;
   try {
-    const newTicket = await Ticket.create({ name, status, description, assignedUserId });
+    const newTicket = await Ticket.create({
+      name,
+      status,
+      description,
+      assignedUserId,
+    });
     res.status(201).json(newTicket);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
@@ -68,7 +72,7 @@ export const updateTicket = async (req: Request, res: Response) => {
       await ticket.save();
       res.json(ticket);
     } else {
-      res.status(404).json({ message: 'Ticket not found' });
+      res.status(404).json({ message: "Ticket not found" });
     }
   } catch (error: any) {
     res.status(400).json({ message: error.message });
@@ -82,9 +86,9 @@ export const deleteTicket = async (req: Request, res: Response) => {
     const ticket = await Ticket.findByPk(id);
     if (ticket) {
       await ticket.destroy();
-      res.json({ message: 'Ticket deleted' });
+      res.json({ message: "Ticket deleted" });
     } else {
-      res.status(404).json({ message: 'Ticket not found' });
+      res.status(404).json({ message: "Ticket not found" });
     }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
