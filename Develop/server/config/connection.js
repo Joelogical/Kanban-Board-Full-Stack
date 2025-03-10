@@ -40,4 +40,4 @@ sequelize
     console.error("✗ Database connection failed:", err.message);
   });
 
-module.exports = sequelize;
+module.exports = sequelize; 

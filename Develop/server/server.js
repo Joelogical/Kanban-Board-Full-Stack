@@ -7,7 +7,7 @@ console.log("Current directory:", process.cwd());
 console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
 
 // Import connection after environment variables are loaded
-const sequelize = require("../../config/connection");
+const sequelize = require("./config/connection");
 
 // Test database connection before starting server
 sequelize
