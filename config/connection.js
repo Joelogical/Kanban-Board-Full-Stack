@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
-require("dotenv").config({ path: "./Develop/server/.env" });
 
 console.log("DATABASE_URL:", process.env.DATABASE_URL);
+console.log("Current directory:", process.cwd());
+console.log("Is DATABASE_URL defined?", !!process.env.DATABASE_URL);
 
 const sequelize = process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
