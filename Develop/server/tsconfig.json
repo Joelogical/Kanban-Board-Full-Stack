@@ -2,15 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    /* Language and Environment */
-    "target": "ES2020",
-    "module": "CommonJS"
-    /* Modules */
-    /* Emit */
-    // "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */
+    "rootDir": "./src"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"],
-  "typeRoots": ["./node_modules/@types", "./src/types"]
+  "exclude": ["node_modules"]
 }
