@@ -10,9 +10,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-app.use("/api", require("./routes/api/ticket-routes"));
-app.use("/api", require("./routes/api/user-routes"));
-app.use("/auth", require("./routes/auth-routes"));
+const ticketRoutes = require("./routes/api/ticket-routes");
+const userRoutes = require("./routes/api/user-routes");
+const authRoutes = require("./routes/auth-routes");
+
+app.use("/api", ticketRoutes);
+app.use("/api", userRoutes);
+app.use("/auth", authRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {
