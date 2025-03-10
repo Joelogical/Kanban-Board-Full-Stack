@@ -26,6 +26,30 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api", apiRoutes);
 
+// Debug route to test ticket controller directly
+app.get("/test-tickets", async (req, res) => {
+  try {
+    console.log("Testing direct ticket access");
+    const tickets = await Ticket.findAll();
+    res.json(tickets);
+  } catch (error: any) {
+    console.error("Error in test-tickets:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Debug route to test router mounting
+app.get("/test-router", (req, res) => {
+  res.json({
+    routes: app._router.stack
+      .filter((r) => r.route)
+      .map((r) => ({
+        path: r.route.path,
+        methods: Object.keys(r.route.methods),
+      })),
+  });
+});
+
 // Basic test route
 app.get("/", (req, res) => {
   res.json({ message: "Server is running" });
