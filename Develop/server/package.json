@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "npm run build && node dist/server.js --ignore client",
+    "start": "npm run build && node dist/src/server.js --ignore client",
     "dev": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node dist/seeds/index.js"
@@ -15,7 +15,7 @@
       "src"
     ],
     "ext": "ts,json,js",
-    "exec": "npx tsc && node dist/server.js"
+    "exec": "npx tsc && node dist/src/server.js"
   },
   "keywords": [],
   "author": "",
