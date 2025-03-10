@@ -9,6 +9,11 @@ import sequelize from "../config/connection.js";
 const User = UserFactory(sequelize);
 const Ticket = TicketFactory(sequelize);
 
+console.log("Models initialized:", {
+  User: !!User,
+  Ticket: !!Ticket,
+});
+
 User.hasMany(Ticket, { foreignKey: "assignedUserId" });
 Ticket.belongsTo(User, { foreignKey: "assignedUserId", as: "assignedUser" });
 

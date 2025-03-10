@@ -2,6 +2,7 @@ import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import apiRoutes from "./routes/api/index.js";
+import "./models/index.js"; // Import models to ensure they're initialized
 
 dotenv.config();
 
