@@ -33,6 +33,10 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Database connection successful");
+    // Sync all models
+    return sequelize.sync();
+  })
+  .then(() => {
     // Start Express server after database connection is confirmed
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
