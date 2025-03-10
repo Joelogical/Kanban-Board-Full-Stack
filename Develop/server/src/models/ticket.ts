@@ -1,5 +1,4 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
-import { User } from './user.js';
+import { DataTypes, Sequelize, Model, Optional } from "sequelize";
 
 interface TicketAttributes {
   id: number;
@@ -9,9 +8,12 @@ interface TicketAttributes {
   assignedUserId?: number;
 }
 
-interface TicketCreationAttributes extends Optional<TicketAttributes, 'id'> {}
+interface TicketCreationAttributes extends Optional<TicketAttributes, "id"> {}
 
-export class Ticket extends Model<TicketAttributes, TicketCreationAttributes> implements TicketAttributes {
+export class Ticket
+  extends Model<TicketAttributes, TicketCreationAttributes>
+  implements TicketAttributes
+{
   public id!: number;
   public name!: string;
   public status!: string;
@@ -19,7 +21,7 @@ export class Ticket extends Model<TicketAttributes, TicketCreationAttributes> im
   public assignedUserId!: number;
 
   // associated User model
-  public readonly assignedUser?: User;
+  public readonly assignedUser?: any; // We'll type this through the association
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -51,7 +53,7 @@ export function TicketFactory(sequelize: Sequelize): typeof Ticket {
       },
     },
     {
-      tableName: 'tickets',
+      tableName: "tickets",
       sequelize,
     }
   );

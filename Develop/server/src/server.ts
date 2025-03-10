@@ -1,8 +1,9 @@
 import path from "path";
 import dotenv from "dotenv";
 import express from "express";
+import sequelize from "./config/connection.js";
+import "./models/index.js";
 import apiRoutes from "./routes/api/index.js";
-import "./models/index.js"; // Import models to ensure they're initialized
 
 dotenv.config();
 
@@ -25,9 +26,6 @@ app.get("/", (req, res) => {
 console.log("Environment check from server.js:");
 console.log("Current directory:", process.cwd());
 console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
-
-// Import connection after environment variables are loaded
-import sequelize from "./config/connection.js";
 
 // Test database connection before starting server
 sequelize
