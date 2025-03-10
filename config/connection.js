@@ -5,7 +5,7 @@ console.log("Environment check from connection.js:");
 console.log("DATABASE_URL:", process.env.DATABASE_URL ? "exists" : "not found");
 
 if (!process.env.DATABASE_URL) {
-  throw new Error("No DATABASE_URL provided");
+  throw new Error("DATABASE_URL environment variable is required");
 }
 
 // Force postgres:// protocol
@@ -15,7 +15,7 @@ console.log(
   dbUrl.split("@")[0].substring(0, 15) + "..."
 );
 
-const sequelize = new Sequelize(dbUrl, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
   dialectOptions: {
     ssl: {
