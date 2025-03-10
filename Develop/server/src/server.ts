@@ -1,6 +1,9 @@
-const path = require("path");
-require("dotenv").config();
-const express = require("express");
+import path from "path";
+import dotenv from "dotenv";
+import express from "express";
+import apiRoutes from "./routes/api/index.js";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,13 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-const ticketRoutes = require("./routes/api/ticket-routes");
-const userRoutes = require("./routes/api/user-routes");
-const authRoutes = require("./routes/auth-routes");
-
-app.use("/api", ticketRoutes);
-app.use("/api", userRoutes);
-app.use("/auth", authRoutes);
+app.use("/api", apiRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {
@@ -33,7 +30,7 @@ console.log("Current directory:", process.cwd());
 console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
 
 // Import connection after environment variables are loaded
-const sequelize = require("./config/connection");
+import sequelize from "./config/connection.js";
 
 // Test database connection before starting server
 sequelize
