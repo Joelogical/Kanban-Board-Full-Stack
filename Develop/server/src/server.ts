@@ -24,7 +24,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
+console.log("Mounting API routes...");
 app.use("/api", apiRoutes);
+console.log("API routes mounted");
 
 // Debug route to test ticket controller directly
 app.get("/test-tickets", async (req, res) => {
