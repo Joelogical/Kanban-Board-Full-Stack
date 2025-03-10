@@ -2,13 +2,22 @@ import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import sequelize from "./config/connection.js";
-import "./models/index.js";
+import { User, Ticket } from "./models/index.js";
 import apiRoutes from "./routes/api/index.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Debug route to check models
+app.get("/debug", (req, res) => {
+  res.json({
+    userModel: !!User,
+    ticketModel: !!Ticket,
+    sequelize: !!sequelize,
+  });
+});
 
 // Middleware
 app.use(express.json());
