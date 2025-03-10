@@ -15,6 +15,11 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api", apiRoutes);
 
+// Basic test route
+app.get("/", (req, res) => {
+  res.json({ message: "Server is running" });
+});
+
 // Debug environment variables
 console.log("Environment check from server.js:");
 console.log("Current directory:", process.cwd());
