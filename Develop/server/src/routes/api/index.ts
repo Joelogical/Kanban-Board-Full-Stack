@@ -4,7 +4,6 @@ import { userRouter } from "./user-routes.js";
 
 const router = Router();
 
-console.log("Setting up API routes");
 router.use("/tickets", ticketRouter);
 router.use("/users", userRouter);
 
