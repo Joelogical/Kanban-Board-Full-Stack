@@ -1,12 +1,5 @@
-import path from "path";
-import { fileURLToPath } from 'url';
-import dotenv from "dotenv";
-import sequelize from "./src/config/connection.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config();
+const path = require("path");
+require("dotenv").config();
 
 // Debug environment variables
 console.log("Environment check from server.js:");

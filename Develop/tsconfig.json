@@ -6,10 +6,8 @@
     "target": "ES2020" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
 
     /* Modules */
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "skipLibCheck": true,
 
     /* JavaScript Support */
