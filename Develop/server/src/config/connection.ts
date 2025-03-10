@@ -15,7 +15,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is required");
 }
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const db = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
   dialectOptions: {
     ssl: {
@@ -26,7 +26,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: false,
 });
 
-sequelize
+db
   .authenticate()
   .then(() => console.log("✅ Database connection successful"))
   .catch((err) => {
@@ -38,4 +38,4 @@ sequelize
     });
   });
 
-module.exports = sequelize;
+module.exports = db;
