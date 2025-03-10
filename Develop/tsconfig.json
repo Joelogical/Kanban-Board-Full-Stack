@@ -8,6 +8,7 @@
     /* Modules */
     "module": "CommonJS",
     "moduleResolution": "node",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   }
 }
