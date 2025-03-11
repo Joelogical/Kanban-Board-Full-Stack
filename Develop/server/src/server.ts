@@ -88,6 +88,21 @@ app.get("/test-tickets", async (req, res) => {
   }
 });
 
+// Test route to create a ticket
+app.post("/test-create-ticket", async (req, res) => {
+  try {
+    const testTicket = await Ticket.create({
+      name: "Test Ticket",
+      status: "Open",
+      description: "This is a test ticket",
+    });
+    res.json(testTicket);
+  } catch (error: any) {
+    console.error("Error creating ticket:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Debug route to test router mounting
 app.get("/test-router", (req, res) => {
   res.json({
