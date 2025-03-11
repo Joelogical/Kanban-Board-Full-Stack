@@ -76,6 +76,14 @@ app.use("/api", apiRoutes);
 if (process.env.NODE_ENV === "production") {
   // Serve client/dist if it exists
   const clientPath = path.join(__dirname, "../../client/dist");
+  console.log("Checking for client files...");
+  console.log("Looking in:", clientPath);
+  console.log("__dirname is:", __dirname);
+  console.log(
+    "Directory contents:",
+    require("fs").readdirSync(path.join(__dirname, "../.."))
+  );
+
   if (require("fs").existsSync(clientPath)) {
     console.log("Serving client files from:", clientPath);
     app.use(express.static(clientPath));
@@ -85,6 +93,10 @@ if (process.env.NODE_ENV === "production") {
     });
   } else {
     console.log("Client dist folder not found at:", clientPath);
+    console.log(
+      "Parent directory contents:",
+      require("fs").readdirSync(path.dirname(clientPath))
+    );
   }
 }
 
