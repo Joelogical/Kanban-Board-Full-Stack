@@ -16,6 +16,11 @@ app.get("/debug", (req, res) => {
     userModel: !!User,
     ticketModel: !!Ticket,
     sequelize: !!sequelize,
+    ticketMethods: Object.keys(Ticket),
+    dbConnected: sequelize
+      .authenticate()
+      .then(() => true)
+      .catch(() => false),
   });
 });
 
@@ -30,10 +35,14 @@ app.use("/api", apiRoutes);
 app.get("/test-tickets", async (req, res) => {
   try {
     console.log("Testing direct ticket access");
+    console.log("Ticket model exists:", !!Ticket);
+    console.log("Ticket model methods:", Object.keys(Ticket));
     const tickets = await Ticket.findAll();
+    console.log("Found tickets:", tickets);
     res.json(tickets);
   } catch (error: any) {
     console.error("Error in test-tickets:", error);
+    console.error("Full error:", error);
     res.status(500).json({ message: error.message });
   }
 });
