@@ -46,11 +46,9 @@ app.get("/model-check", (req, res) => {
 app.get("/db-check", async (req, res) => {
   try {
     await sequelize.authenticate();
-    const tables = await sequelize.showAllSchemas();
     const ticketCount = await Ticket.count();
     res.json({
       connection: "success",
-      tables,
       models: {
         Ticket: {
           count: ticketCount,
