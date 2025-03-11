@@ -42,6 +42,31 @@ app.get("/model-check", (req, res) => {
   });
 });
 
+// Database check
+app.get("/db-check", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    const tables = await sequelize.showAllSchemas();
+    const ticketCount = await Ticket.count();
+    res.json({
+      connection: "success",
+      tables,
+      models: {
+        Ticket: {
+          count: ticketCount,
+          tableName: Ticket.tableName,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      connection: "failed",
+      error: error.message,
+      stack: error.stack,
+    });
+  }
+});
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
