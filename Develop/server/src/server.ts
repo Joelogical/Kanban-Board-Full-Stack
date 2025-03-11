@@ -72,6 +72,22 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api", apiRoutes);
 
+// Serve static files in production
+if (process.env.NODE_ENV === "production") {
+  // Serve client/dist if it exists
+  const clientPath = path.join(__dirname, "../../client/dist");
+  if (require("fs").existsSync(clientPath)) {
+    console.log("Serving client files from:", clientPath);
+    app.use(express.static(clientPath));
+
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(clientPath, "index.html"));
+    });
+  } else {
+    console.log("Client dist folder not found at:", clientPath);
+  }
+}
+
 // Debug route to test ticket controller directly
 app.get("/test-tickets", async (req, res) => {
   try {
