@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import sequelize from "./config/connection.js";
 import { User, Ticket } from "./models/index.js";
-import apiRoutes from "./src/routes/api/index.js";
+import apiRoutes from "./routes/api/index.js";
 
 dotenv.config();
 

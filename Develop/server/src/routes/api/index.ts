@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ticketRouter } from "../../routes/api/ticket-routes.js";
-import { userRouter } from "../../routes/api/user-routes.js";
+import { ticketRouter } from "./ticket-routes.js";
+import { userRouter } from "./user-routes.js";
 
 const router = Router();
 
