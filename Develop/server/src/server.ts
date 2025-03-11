@@ -5,6 +5,12 @@ import sequelize from "./config/connection.js";
 import { User, Ticket } from "./models/index.js";
 import apiRoutes from "./routes/api/index.js";
 
+console.log("=====================================");
+console.log("Server starting...");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("Current directory:", process.cwd());
+console.log("=====================================");
+
 dotenv.config();
 
 const app = express();
@@ -21,6 +27,18 @@ app.get("/debug", (req, res) => {
       .authenticate()
       .then(() => true)
       .catch(() => false),
+  });
+});
+
+// Simple model check
+app.get("/model-check", (req, res) => {
+  console.log("Model check route hit");
+  res.json({
+    ticket: {
+      model: !!Ticket,
+      methods: Object.getOwnPropertyNames(Ticket),
+      prototype: Object.getOwnPropertyNames(Ticket.prototype),
+    },
   });
 });
 
@@ -87,3 +105,9 @@ sequelize
     console.error("Database connection error:", err);
     process.exit(1);
   });
+
+// Also add error handling middleware at the end
+app.use((err, req, res, next) => {
+  console.error("Global error handler caught:", err);
+  res.status(500).json({ message: err.message });
+});
