@@ -9,6 +9,12 @@ import {
 
 const router = express.Router();
 
+// Debug middleware
+router.use((req, res, next) => {
+  console.log('Ticket route accessed:', req.method, req.path);
+  next();
+});
+
 // GET /tickets - Get all tickets
 router.get('/', getAllTickets);
 
