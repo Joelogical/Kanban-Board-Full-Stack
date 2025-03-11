@@ -89,7 +89,7 @@ app.get("/test-tickets", async (req, res) => {
 });
 
 // Test route to create a ticket
-app.post("/test-create-ticket", async (req, res) => {
+app.get("/test-create-ticket", async (req, res) => {
   try {
     const testTicket = await Ticket.create({
       name: "Test Ticket",
