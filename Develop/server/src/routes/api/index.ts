@@ -10,6 +10,11 @@ router.use((req, res, next) => {
   next();
 });
 
+// Test route
+router.get("/test", (req, res) => {
+  res.json({ message: "API router is working" });
+});
+
 router.use("/tickets", ticketRouter);
 router.use("/users", userRouter);
 
