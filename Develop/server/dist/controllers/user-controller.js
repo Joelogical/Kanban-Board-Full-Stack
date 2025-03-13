@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserById = exports.getAllUsers = void 0;
-const user_js_1 = require("../models/user.js");
+const user_1 = require("../models/user");
 // GET /Users
 const getAllUsers = async (_req, res) => {
     try {
-        const users = await user_js_1.User.findAll({
-            attributes: { exclude: ['password'] }
+        const users = await user_1.User.findAll({
+            attributes: { exclude: ["password"] },
         });
         res.json(users);
     }
@@ -19,14 +19,14 @@ exports.getAllUsers = getAllUsers;
 const getUserById = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await user_js_1.User.findByPk(id, {
-            attributes: { exclude: ['password'] }
+        const user = await user_1.User.findByPk(id, {
+            attributes: { exclude: ["password"] },
         });
         if (user) {
             res.json(user);
         }
         else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: "User not found" });
         }
     }
     catch (error) {
@@ -38,7 +38,11 @@ exports.getUserById = getUserById;
 const createUser = async (req, res) => {
     const { username, password } = req.body;
     try {
-        const newUser = await user_js_1.User.create({ username, password });
+        const newUser = await user_1.User.create({
+            username,
+            password,
+            email: `${username}@example.com`,
+        });
         res.status(201).json(newUser);
     }
     catch (error) {
@@ -51,7 +55,7 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { username, password } = req.body;
     try {
-        const user = await user_js_1.User.findByPk(id);
+        const user = await user_1.User.findByPk(id);
         if (user) {
             user.username = username;
             user.password = password;
@@ -59,7 +63,7 @@ const updateUser = async (req, res) => {
             res.json(user);
         }
         else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: "User not found" });
         }
     }
     catch (error) {
@@ -71,13 +75,13 @@ exports.updateUser = updateUser;
 const deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await user_js_1.User.findByPk(id);
+        const user = await user_1.User.findByPk(id);
         if (user) {
             await user.destroy();
-            res.json({ message: 'User deleted' });
+            res.json({ message: "User deleted" });
         }
         else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: "User not found" });
         }
     }
     catch (error) {

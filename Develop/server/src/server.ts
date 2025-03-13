@@ -1,179 +1,79 @@
-import path from "path";
 import dotenv from "dotenv";
-import express from "express";
-import sequelize from "./config/connection.js";
-import { User, Ticket } from "./models/index.js";
-import apiRoutes from "./routes/api/index.js";
-
-console.log("=====================================");
-console.log("Server starting...");
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("Current directory:", process.cwd());
-console.log("=====================================");
-
 dotenv.config();
+
+import express from "express";
+import path from "path";
+import { sequelize, User } from "./models/index";
+import apiRoutes from "./routes/api/index";
+import authRoutes from "./routes/auth-routes";
+import bcrypt from "bcryptjs";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Debug route to check models
-app.get("/debug", (req, res) => {
-  res.json({
-    userModel: !!User,
-    ticketModel: !!Ticket,
-    sequelize: !!sequelize,
-    ticketMethods: Object.keys(Ticket),
-    dbConnected: sequelize
-      .authenticate()
-      .then(() => true)
-      .catch(() => false),
-  });
-});
-
-// Simple model check
-app.get("/model-check", (req, res) => {
-  console.log("Model check route hit");
-  res.json({
-    ticket: {
-      model: !!Ticket,
-      methods: Object.getOwnPropertyNames(Ticket),
-      prototype: Object.getOwnPropertyNames(Ticket.prototype),
-    },
-  });
-});
-
-// Database check
-app.get("/db-check", async (req, res) => {
-  try {
-    await sequelize.authenticate();
-    const ticketCount = await Ticket.count();
-    res.json({
-      connection: "success",
-      models: {
-        Ticket: {
-          count: ticketCount,
-          tableName: Ticket.tableName,
-        },
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      connection: "failed",
-      error: error.message,
-      stack: error.stack,
-    });
-  }
+// Debug logging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
 });
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS middleware for development
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 // API Routes
 app.use("/api", apiRoutes);
+app.use("/auth", authRoutes);
 
-// Serve static files in production
+// Serves static files in production
 if (process.env.NODE_ENV === "production") {
-  // Serve client/dist if it exists
-  const clientPath = path.join(__dirname, "../../client/dist");
-  console.log("Checking for client files...");
-  console.log("Looking in:", clientPath);
-  console.log("__dirname is:", __dirname);
-  console.log(
-    "Directory contents:",
-    require("fs").readdirSync(path.join(__dirname, "../.."))
-  );
+  app.use(express.static(path.join(process.cwd(), "dist/client")));
 
-  if (require("fs").existsSync(clientPath)) {
-    console.log("Serving client files from:", clientPath);
-    app.use(express.static(clientPath));
-
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(clientPath, "index.html"));
-    });
-  } else {
-    console.log("Client dist folder not found at:", clientPath);
-    console.log(
-      "Parent directory contents:",
-      require("fs").readdirSync(path.dirname(clientPath))
-    );
-  }
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "dist/client/index.html"));
+  });
 }
 
-// Debug route to test ticket controller directly
-app.get("/test-tickets", async (req, res) => {
-  try {
-    console.log("Testing direct ticket access");
-    console.log("Ticket model exists:", !!Ticket);
-    console.log("Ticket model methods:", Object.keys(Ticket));
-    const tickets = await Ticket.findAll();
-    console.log("Found tickets:", tickets);
-    res.json(tickets);
-  } catch (error: any) {
-    console.error("Error in test-tickets:", error);
-    console.error("Full error:", error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Test route to create a ticket
-app.get("/test-create-ticket", async (req, res) => {
-  try {
-    const testTicket = await Ticket.create({
-      name: "Test Ticket",
-      status: "Open",
-      description: "This is a test ticket",
-    });
-    res.json(testTicket);
-  } catch (error: any) {
-    console.error("Error creating ticket:", error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Debug route to test router mounting
-app.get("/test-router", (req, res) => {
-  res.json({
-    routes: app._router.stack
-      .filter((r) => r.route)
-      .map((r) => ({
-        path: r.route.path,
-        methods: Object.keys(r.route.methods),
-      })),
-  });
-});
-
 // Basic test route
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({ message: "Server is running" });
 });
 
-// Debug environment variables
-console.log("Environment check from server.js:");
-console.log("Current directory:", process.cwd());
-console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+const forceDatabaseRefresh = false;
 
-// Test database connection before starting server
 sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Database connection successful");
-    // Sync all models
-    return sequelize.sync();
-  })
-  .then(() => {
-    // Start Express server after database connection is confirmed
+  .sync({ force: forceDatabaseRefresh })
+  .then(async () => {
+    // Create test user
+    try {
+      await User.findOrCreate({
+        where: { username: "test" },
+        defaults: {
+          username: "test",
+          password: await bcrypt.hash("password123", 10),
+          email: "test@example.com",
+        },
+      });
+    } catch (error) {
+      console.error("Error creating test user:", error);
+    }
+
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server is listening on port ${PORT}`);
     });
   })
   .catch((err) => {
     console.error("Database connection error:", err);
     process.exit(1);
   });
-
-// Also add error handling middleware at the end
-app.use((err, req, res, next) => {
-  console.error("Global error handler caught:", err);
-  res.status(500).json({ message: err.message });
-});

@@ -30,7 +30,7 @@ function TicketFactory(sequelize) {
             allowNull: true,
         },
     }, {
-        tableName: 'tickets',
+        tableName: "tickets",
         sequelize,
     });
     return Ticket;

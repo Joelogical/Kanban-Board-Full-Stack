@@ -1,50 +1,31 @@
-import { JwtPayload as BaseJwtPayload, jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
-interface JwtPayload extends BaseJwtPayload {
-  username: string;
-}
+class Auth {
+  getToken() {
+    return localStorage.getItem('token');
+  }
 
-class AuthService {
-  getProfile(): JwtPayload {
+  login(token: string) {
+    localStorage.setItem('token', token);
+    window.location.assign('/');
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    window.location.assign('/login');
+  }
+
+  loggedIn() {
     const token = this.getToken();
+    if (!token) return false;
+    
     try {
-      return token
-        ? jwtDecode<JwtPayload>(token)
-        : { username: "", exp: 0, iat: 0 };
-    } catch {
-      return { username: "", exp: 0, iat: 0 };
+      const decoded = jwtDecode(token);
+      return decoded.exp ? decoded.exp * 1000 > Date.now() : false;
+    } catch (err) {
+      return false;
     }
-  }
-
-  loggedIn(): boolean {
-    const token = this.getToken();
-    return Boolean(token) && !this.isTokenExpired(token);
-  }
-
-  isTokenExpired(token: string): boolean {
-    if (!token) return true;
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      if (!decoded.exp) return true;
-      return decoded.exp * 1000 < Date.now();
-    } catch {
-      return true;
-    }
-  }
-
-  getToken(): string {
-    return localStorage.getItem("id_token") || "";
-  }
-
-  login(idToken: string): void {
-    localStorage.setItem("id_token", idToken);
-    window.location.assign("/");
-  }
-
-  logout(): void {
-    localStorage.removeItem("id_token");
-    window.location.assign("/login");
   }
 }
 
-export default new AuthService();
+export default new Auth();

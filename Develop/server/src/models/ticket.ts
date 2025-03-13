@@ -1,4 +1,5 @@
-import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { DataTypes, Model, Sequelize, Optional } from "sequelize";
+import type { User } from "./user";
 
 interface TicketAttributes {
   id: number;
@@ -21,7 +22,7 @@ export class Ticket
   public assignedUserId!: number;
 
   // associated User model
-  public readonly assignedUser?: any; // We'll type this through the association
+  public readonly assignedUser?: User;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

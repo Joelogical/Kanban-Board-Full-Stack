@@ -1,24 +1,21 @@
 import { Request, Response } from "express";
-import { Ticket, User } from "../models/index.js";
+import { Ticket } from "../models/ticket";
+import { User } from "../models/user";
 
 // GET /tickets
 export const getAllTickets = async (_req: Request, res: Response) => {
   try {
-    console.log("Getting all tickets...");
-    console.log("Ticket model exists:", !!Ticket);
     const tickets = await Ticket.findAll({
       include: [
         {
           model: User,
-          as: "assignedUser", // This should match the alias defined in the association
-          attributes: ["username"], // Include only the username attribute
+          as: "assignedUser",
+          attributes: ["username"],
         },
       ],
     });
-    console.log("Found tickets:", tickets.length);
     res.json(tickets);
   } catch (error: any) {
-    console.error("Error in getAllTickets:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -31,8 +28,8 @@ export const getTicketById = async (req: Request, res: Response) => {
       include: [
         {
           model: User,
-          as: "assignedUser", // This should match the alias defined in the association
-          attributes: ["username"], // Include only the username attribute
+          as: "assignedUser",
+          attributes: ["username"],
         },
       ],
     });

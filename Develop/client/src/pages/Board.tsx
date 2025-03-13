@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -57,36 +58,26 @@ const Board = () => {
   }
 
   return (
-    <>
-    {
-      !loginCheck ? (
-        <div className='login-notice'>
-          <h1>
-            Login to create & view tickets
-          </h1>
-        </div>  
-      ) : (
-          <div className='board'>
-            <button type='button' id='create-ticket-link'>
-              <Link to='/create' >New Ticket</Link>
-            </button>
-            <div className='board-display'>
-              {boardStates.map((status) => {
-                const filteredTickets = tickets.filter(ticket => ticket.status === status);
-                return (
-                  <Swimlane 
-                    title={status} 
-                    key={status} 
-                    tickets={filteredTickets} 
-                    deleteTicket={deleteIndvTicket}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        )
-    }
-    </>
+    <div className="board">
+      <div className="board-column">
+        <h2>To Do</h2>
+        <div className="ticket-list">
+          {/* Tickets will go here */}
+        </div>
+      </div>
+      <div className="board-column">
+        <h2>In Progress</h2>
+        <div className="ticket-list">
+          {/* Tickets will go here */}
+        </div>
+      </div>
+      <div className="board-column">
+        <h2>Done</h2>
+        <div className="ticket-list">
+          {/* Tickets will go here */}
+        </div>
+      </div>
+    </div>
   );
 };
 

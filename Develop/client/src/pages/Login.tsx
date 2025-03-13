@@ -1,10 +1,10 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, FormEvent, ChangeEvent } from "react";
 
 import Auth from "../utils/auth";
 import { login } from "../api/authAPI";
 
 const Login = () => {
-  const [loginData, setLoginData] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
@@ -14,8 +14,8 @@ const Login = () => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
+    setFormData({
+      ...formData,
       [name]: value,
     });
     // Clear error when user starts typing
@@ -25,7 +25,7 @@ const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const data = await login(loginData);
+      const data = await login(formData);
       Auth.login(data.token);
     } catch (err) {
       console.error("Failed to login", err);
@@ -34,9 +34,9 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
-      <form className="form" onSubmit={handleSubmit}>
-        <h1>Login</h1>
+    <div className="login-container">
+      <form onSubmit={handleSubmit}>
+        <h2>Login</h2>
         {error && (
           <div
             className="error-message"
@@ -45,21 +45,25 @@ const Login = () => {
             {error}
           </div>
         )}
-        <label>Username</label>
-        <input
-          type="text"
-          name="username"
-          value={loginData.username || ""}
-          onChange={handleChange}
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          name="password"
-          value={loginData.password || ""}
-          onChange={handleChange}
-        />
-        <button type="submit">Submit Form</button>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+        <button type="submit">Login</button>
       </form>
     </div>
   );

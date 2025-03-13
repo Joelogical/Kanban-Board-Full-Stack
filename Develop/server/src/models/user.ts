@@ -1,13 +1,6 @@
-import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import bcrypt from "bcryptjs";
-
-interface UserAttributes {
-  id: number;
-  username: string;
-  password: string;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
+import { UserAttributes, UserCreationAttributes } from "./types";
 
 export class User
   extends Model<UserAttributes, UserCreationAttributes>
@@ -16,6 +9,7 @@ export class User
   public id!: number;
   public username!: string;
   public password!: string;
+  public email!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -40,6 +34,10 @@ export function UserFactory(sequelize: Sequelize): typeof User {
         allowNull: false,
       },
       password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
       },
