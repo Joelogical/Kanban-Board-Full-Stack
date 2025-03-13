@@ -1,5 +1,5 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
-import { User } from './user';
+import { DataTypes, Model, Sequelize, Optional } from "sequelize";
+import type { User } from "./user";
 
 interface TicketAttributes {
   id: number;
@@ -9,9 +9,12 @@ interface TicketAttributes {
   assignedUserId?: number;
 }
 
-interface TicketCreationAttributes extends Optional<TicketAttributes, 'id'> {}
+interface TicketCreationAttributes extends Optional<TicketAttributes, "id"> {}
 
-export class Ticket extends Model<TicketAttributes, TicketCreationAttributes> implements TicketAttributes {
+export class Ticket
+  extends Model<TicketAttributes, TicketCreationAttributes>
+  implements TicketAttributes
+{
   public id!: number;
   public name!: string;
   public status!: string;
@@ -51,7 +54,7 @@ export function TicketFactory(sequelize: Sequelize): typeof Ticket {
       },
     },
     {
-      tableName: 'tickets',
+      tableName: "tickets",
       sequelize,
     }
   );

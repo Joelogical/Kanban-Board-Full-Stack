@@ -4,6 +4,16 @@ import jwt from "jsonwebtoken";
 interface JwtPayload {
   username: string;
 }
+
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JwtPayload;
+    }
+  }
+}
+
 // verify the token exists and add the user data to the request object
 export const authenticateToken = (
   req: Request,
