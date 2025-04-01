@@ -1,19 +1,24 @@
-import React from 'react';
-import { 
+import React from "react";
+import {
   createBrowserRouter,
   RouterProvider,
   Link,
-  Outlet
-} from 'react-router-dom';
-import Board from './pages/Board';
-import Login from './pages/Login';
+  Outlet,
+} from "react-router-dom";
+import Board from "./pages/Board";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Layout = () => (
   <div>
     <nav>
       <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/login">Login</Link></li>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
       </ul>
     </nav>
     <h1>Kanban Board</h1>
@@ -21,27 +26,36 @@ const Layout = () => (
   </div>
 );
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          path: "",
+          element: <ProtectedRoute />,
+          children: [
+            {
+              index: true,
+              element: <Board />,
+            },
+          ],
+        },
+        {
+          path: "login",
+          element: <Login />,
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Board />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-    ],
-  },
-]);
+    basename: "/",
+  }
+);
 
-function App() {
-  return (
-    <RouterProvider router={router} />
-  );
-}
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
 export default App;

@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 
 interface JwtPayload {
   username: string;
+  id: number;
+  exp: number;
 }
 
 // Extend Express Request type to include user
@@ -32,9 +34,18 @@ export const authenticateToken = (
       token,
       process.env.JWT_SECRET_KEY!
     ) as JwtPayload;
+
+    // Check if token is expired
+    if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+      return res.status(401).json({ message: "Token has expired" });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: "Token has expired" });
+    }
     return res.status(403).json({ message: "Invalid token" });
   }
 };

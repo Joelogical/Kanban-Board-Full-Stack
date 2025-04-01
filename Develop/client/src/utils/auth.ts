@@ -1,5 +1,11 @@
 import { jwtDecode } from 'jwt-decode';
 
+interface DecodedToken {
+  username: string;
+  id: number;
+  exp: number;
+}
+
 class Auth {
   getToken() {
     return localStorage.getItem('token');
@@ -20,9 +26,17 @@ class Auth {
     if (!token) return false;
     
     try {
-      const decoded = jwtDecode(token);
-      return decoded.exp ? decoded.exp * 1000 > Date.now() : false;
+      const decoded = jwtDecode<DecodedToken>(token);
+      const isExpired = decoded.exp * 1000 < Date.now();
+      
+      if (isExpired) {
+        this.logout();
+        return false;
+      }
+      
+      return true;
     } catch (err) {
+      this.logout();
       return false;
     }
   }

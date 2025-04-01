@@ -4,16 +4,19 @@ dotenv.config();
 import express from "express";
 import path from "path";
 import { sequelize, User } from "./models/index";
-import apiRoutes from "./routes/api/index";
-import authRoutes from "./routes/auth-routes";
+import routes from "./routes/index.js";
 import bcrypt from "bcryptjs";
+import { seedUsers } from "./seeds/user-seeds.js";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // Debug logging
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log(
+    `${new Date().toISOString()} - ${req.method} ${req.path}, Body:`,
+    req.body
+  );
   next();
 });
 
@@ -29,12 +32,14 @@ app.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
   next();
 });
 
 // API Routes
-app.use("/api", apiRoutes);
-app.use("/auth", authRoutes);
+app.use("/", routes);
 
 // Serves static files in production
 if (process.env.NODE_ENV === "production") {
@@ -50,30 +55,32 @@ app.get("/test", (req, res) => {
   res.json({ message: "Server is running" });
 });
 
-const forceDatabaseRefresh = false;
+const initializeDatabase = async () => {
+  try {
+    // Force sync to recreate all tables
+    await sequelize.sync({ force: true });
+    console.log("Database synced");
 
-sequelize
-  .sync({ force: forceDatabaseRefresh })
-  .then(async () => {
-    // Create test user
-    try {
-      await User.findOrCreate({
-        where: { username: "test" },
-        defaults: {
-          username: "test",
-          password: await bcrypt.hash("password123", 10),
-          email: "test@example.com",
-        },
-      });
-    } catch (error) {
-      console.error("Error creating test user:", error);
-    }
+    // Seed the database
+    await seedUsers();
+    console.log("Database seeded");
 
+    // Create a test user manually to verify
+    const testUser = await User.create({
+      username: "test",
+      password: "password123",
+      email: "test@example.com",
+    });
+    console.log("Test user created:", testUser.username);
+
+    // Start the server
     app.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error("Database connection error:", err);
+  } catch (error) {
+    console.error("Database initialization error:", error);
     process.exit(1);
-  });
+  }
+};
+
+initializeDatabase();
